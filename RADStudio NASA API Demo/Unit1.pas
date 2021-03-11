@@ -5,15 +5,15 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, IPPeerClient,
-  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
-  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
-  System.Rtti, System.Bindings.Outputs, Fmx.Bind.Editors, Data.Bind.EngExt,
-  Fmx.Bind.DBEngExt, Data.Bind.Components, Data.Bind.DBScope, FMX.Edit,
-  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.ExtCtrls, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, REST.Response.Adapter, REST.Client,
-  Data.Bind.ObjectScope, System.Net.URLClient, System.Net.HttpClient,
-  System.Net.HttpClientComponent, FMX.Calendar, DateUtils, System.Actions,
-  FMX.ActnList, FMX.Objects, FMX.MultiView, System.Threading;
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error,
+  FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, System.Rtti,
+  System.Bindings.Outputs, Fmx.Bind.Editors, Data.Bind.EngExt, Fmx.Bind.DBEngExt,
+  Data.Bind.Components, Data.Bind.DBScope, FMX.Edit, FMX.Controls.Presentation,
+  FMX.StdCtrls, FMX.Layouts, FMX.ExtCtrls, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, REST.Response.Adapter, REST.Client, Data.Bind.ObjectScope,
+  System.Net.URLClient, System.Net.HttpClient, System.Net.HttpClientComponent,
+  FMX.Calendar, DateUtils, System.Actions, FMX.ActnList, FMX.Objects,
+  FMX.MultiView, System.Threading, REST.Types;
 
 type
   TForm1 = class(TForm)
@@ -53,13 +53,13 @@ type
     { Private declarations }
   public
     { Public declarations }
-    BaseURL: String;
-    BaseDate: String;
+    BaseURL: string;
+    BaseDate: string;
   end;
-  const
-   // get your key from https://api.nasa.gov/index.html#apply-for-an-api-key
-   APIKey = 'DEMO_KEY';
 
+const
+   // get your key from https://api.nasa.gov/index.html#apply-for-an-api-key
+  APIKey = 'os49gR6PrgY2sSPNEsQhZyfldx4NX9RP3Kg06MTg';
 
 var
   Form1: TForm1;
@@ -70,59 +70,69 @@ implementation
 
 procedure TForm1.Calendar1Change(Sender: TObject);
 begin
-BaseDate := YearOf(Calendar1.DateTime).ToString + '-' + MonthOfTheYear(Calendar1.DateTime).ToString + '-' + DayOfTheMonth(Calendar1.DateTime).ToString;
-GetImageAction.Execute;
+  BaseDate := YearOf(Calendar1.DateTime).ToString + '-' + MonthOfTheYear(Calendar1.DateTime).ToString + '-' + DayOfTheMonth(Calendar1.DateTime).ToString;
+  GetImageAction.Execute;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-BaseURL := 'https://api.nasa.gov/planetary/apod?api_key=' + APIKey;
+  BaseURL := 'https://api.nasa.gov/planetary/apod?api_key=' + APIKey;
 end;
 
 procedure TForm1.GetImageActionExecute(Sender: TObject);
-var
-AResponseStream: TMemoryStream;
 begin
-if BaseDate<>'' then
+  if BaseDate <> '' then
   begin
-   RESTClient1.BaseURL := BaseURL + '&date=' + BaseDate;
+    RESTClient1.BaseURL := BaseURL + '&date=' + BaseDate;
   end
- else
+  else
   begin
     RESTClient1.BaseURL := BaseURL;
   end;
-  ITask(TTask.Create(procedure
+  ITask(TTask.Create(
+    procedure
+    var
+      AResponseStream: TMemoryStream;
     begin
-      TThread.Queue(nil,procedure
-        begin
-          RESTRequest1.Execute;
-          AResponseStream := TMemoryStream.Create;
-          NetHTTPClient1.Get(Edit1.Text,AResponseStream);
-          try
-           ImageViewer1.Bitmap.LoadFromStream(AResponseStream);
-          except
-          end;
+      RESTRequest1.Execute;
+      if not Edit1.Text.IsEmpty then
+      begin
+        AResponseStream := TMemoryStream.Create;
+        NetHTTPClient1.Get(Edit1.Text, AResponseStream);
+        try
+          TThread.Synchronize(nil,
+            procedure
+            begin
+              try
+                ImageViewer1.Bitmap.LoadFromStream(AResponseStream);
+              except
+              end;
+            end);
+        finally
           AResponseStream.Free;
-        end);
+        end;
+      end;
     end)).Start;
 end;
 
 procedure TForm1.Pie1Click(Sender: TObject);
 begin
-Calendar1.Date := Calendar1.Date-1;
+  Calendar1.Date := Calendar1.Date - 1;
 end;
 
 procedure TForm1.Pie2Click(Sender: TObject);
 begin
-if (Calendar1.Date+1)>Now then Exit;
-Calendar1.Date := Calendar1.Date+1;
+  if (Calendar1.Date + 1) > Now then
+    Exit;
+  Calendar1.Date := Calendar1.Date + 1;
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
-Timer1.Enabled := False;
-Calendar1.Date := Now;
-GetImageAction.Execute;
+  Timer1.Enabled := False;
+  Calendar1.Date := Now;
+  GetImageAction.Execute;
 end;
 
 end.
+
