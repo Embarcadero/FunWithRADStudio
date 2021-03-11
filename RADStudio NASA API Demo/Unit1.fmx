@@ -32,7 +32,7 @@ object Form1: TForm1
     StyleLookup = 'framedscrollboxstyle'
     TabOrder = 5
     BackgroundFill.Kind = None
-    BitmapScale = 0.879999935626983700
+    BitmapScale = 0.799999892711639400
     ShowBackground = True
     ShowSizeGrip = True
     Viewport.Width = 636.000000000000000000
@@ -47,6 +47,7 @@ object Form1: TForm1
     Size.Width = 540.000000000000000000
     Size.Height = 104.000000000000000000
     Size.PlatformDefault = False
+    Text = 'Zodiacal Light and Mars'
     TextSettings.Font.Size = 24.000000000000000000
     TextSettings.Font.StyleExt = {00070000000000000004000000}
     TextSettings.FontColor = claWhite
@@ -53850,7 +53851,7 @@ object Form1: TForm1
     object Calendar1: TCalendar
       Align = Client
       Date = 42722.000000000000000000
-      Size.Width = 249.000000000000000000
+      Size.Width = 250.000000000000000000
       Size.Height = 336.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 10
@@ -53859,19 +53860,20 @@ object Form1: TForm1
   end
   object RESTClient1: TRESTClient
     Accept = 'application/json, text/plain; q=0.9, text/html;q=0.8,'
-    AcceptCharset = 'UTF-8, *;q=0.8'
+    AcceptCharset = 'utf-8, *;q=0.8'
+    BaseURL = 
+      'https://api.nasa.gov/planetary/apod?api_key=os49gR6PrgY2sSPNEsQh' +
+      'Zyfldx4NX9RP3Kg06MTg'
     Params = <>
-    HandleRedirects = True
     RaiseExceptionOn500 = False
-    Left = 344
+    Left = 288
     Top = 40
   end
   object RESTRequest1: TRESTRequest
     Client = RESTClient1
     Params = <>
     Response = RESTResponse1
-    SynchronizedEvents = False
-    Left = 400
+    Left = 376
     Top = 40
   end
   object RESTResponse1: TRESTResponse
@@ -53884,51 +53886,51 @@ object Form1: TForm1
     Dataset = FDMemTable1
     FieldDefs = <>
     Response = RESTResponse1
-    Left = 536
-    Top = 40
+    Left = 240
+    Top = 128
   end
   object FDMemTable1: TFDMemTable
     Active = True
     FieldDefs = <
       item
         Name = 'copyright'
-        DataType = ftString
-        Size = 20
+        DataType = ftWideString
+        Size = 255
       end
       item
         Name = 'date'
-        DataType = ftString
-        Size = 20
+        DataType = ftWideString
+        Size = 255
       end
       item
         Name = 'explanation'
-        DataType = ftString
-        Size = 20
+        DataType = ftWideString
+        Size = 255
       end
       item
         Name = 'hdurl'
-        DataType = ftString
-        Size = 20
+        DataType = ftWideString
+        Size = 255
       end
       item
         Name = 'media_type'
-        DataType = ftString
-        Size = 20
+        DataType = ftWideString
+        Size = 255
       end
       item
         Name = 'service_version'
-        DataType = ftString
-        Size = 20
+        DataType = ftWideString
+        Size = 255
       end
       item
         Name = 'title'
-        DataType = ftString
-        Size = 20
+        DataType = ftWideString
+        Size = 255
       end
       item
         Name = 'url'
-        DataType = ftString
-        Size = 20
+        DataType = ftWideString
+        Size = 255
       end>
     IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
@@ -53971,8 +53973,8 @@ object Form1: TForm1
     Asynchronous = False
     ConnectionTimeout = 60000
     ResponseTimeout = 60000
-    AllowCookies = True
     HandleRedirects = True
+    AllowCookies = True
     UserAgent = 'Embarcadero URI Client/1.0'
     Left = 432
     Top = 232
